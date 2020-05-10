@@ -5,15 +5,15 @@ from .typecheck import check
 
 class Schema(AbstractSchema):
     @classmethod
-    def validate_failed(cls, obj: Mapping[str, Any]) -> Tuple[bool, List[str]]:
+    def validate_errors(cls, obj: Mapping[str, Any]) -> List[str]:
         errors = []
         error = True
         for name, objtype in cls.__annotations__.items():
-            flag, suberr = check(obj.get(name), objtype)
-            if not flag:
+            suberr = check(obj.get(name), objtype)
+            if suberr:
                 error = False
                 if suberr:
                     errors.extend([f"{name}::{err}" for err in suberr])
                 else:
                     errors.append(name)
-        return error, errors
+        return errors
