@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import unittest
-from typing import List, Dict
+from unittest.mock import Mock, patch
+from typing import List, Dict, Mapping, Any
 
-from schemator.typecheck import check
+from schemator.typecheck import check, AbstractSchema
 
 
 class BasicTypeTest(unittest.TestCase):
@@ -63,13 +64,13 @@ class BasicTypeTest(unittest.TestCase):
         self.assertNotEmpty(check(10, dict))
         self.assertNotEmpty(check(None, dict))
 
+
 class AdvanceTypeTest(unittest.TestCase):
     def assertEmpty(self, value):
         self.assertSequenceEqual(value, [])
 
     def assertNotEmpty(self, value):
         self.assertNotEqual(value, [])
-
 
     def test_list(self):
         self.assertEmpty(check(["string", "string2", "string3"], List[str]))
@@ -86,5 +87,20 @@ class AdvanceTypeTest(unittest.TestCase):
         self.assertNotEmpty(check({10: "str", "str": "str"}, Dict[str, int]))
 
 
+class ExampleSchema(AbstractSchema):
+    @classmethod
+    def validate_errors(cls, obj: Mapping[str, Any]) -> List[str]:
+        return True
+
+    @classmethod
+    def load(cls, obj: dict) -> "AbstractSchema":
+        return None
+
+
 class OtherSchemaTest(unittest.TestCase):
-    pass
+    def test_other_schema(self):
+        assert check({}, ExampleSchema)
+
+    def test_other_schema_fail(self):
+        with patch.object(ExampleSchema, 'validate_errors', return_value=False):
+            assert not check({}, ExampleSchema)
