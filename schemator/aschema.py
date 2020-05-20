@@ -4,6 +4,7 @@ from typing import List, Tuple, TypeVar, Generic, Mapping, Any, Dict
 
 T = TypeVar('T')
 
+
 class AbstractSchema(ABC):
     @classmethod
     @abstractmethod

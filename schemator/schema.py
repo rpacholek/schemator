@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Mapping, Tuple, List
+from typing import Any, Mapping, Tuple, List, Type
 from .aschema import AbstractSchema, T
 from .typecheck import check, is_advanced
 
@@ -23,9 +23,8 @@ class Schema(AbstractSchema):
                     errors.append(f"{name}::UnexptectedKey")
         return errors
 
-
     @classmethod
-    def validate(cls, obj: Mapping[str, Any]) -> bool
+    def validate(cls, obj: Mapping[str, Any]) -> bool:
         errs = cls.validate_errors(obj)
         return errs == []
 
@@ -34,8 +33,9 @@ class Schema(AbstractSchema):
         instance = cls()
         for name, objtype in cls.__annotations__.items():
             if isinstance(objtype, type) and issubclass(objtype, AbstractSchema):
-                instance.__dict__[name] = objtype.load(obj.get(name))
-            elif is_advanced(expected_type):
+                instance.__dict__[name] = objtype.load(
+                    obj.get(name))  # type: ignore
+            elif is_advanced(objtype):
                 pass
             else:
                 instance.__dict__[name] = obj.get(name)
