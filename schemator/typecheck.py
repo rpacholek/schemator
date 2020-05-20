@@ -11,12 +11,14 @@ def check(value: Any, expected_type: type) -> TError:
     # print(value, expected_type)
     if expected_type in BASIC_TYPES:
         return _check_basic(value, expected_type)
-    elif any([type(expected_type) == type(adv_type) for adv_type in ADVANCED_TYPES]):
+    elif is_advanced(expected_type):
         return _check_advanced(value, expected_type)
     elif issubclass(expected_type, AbstractSchema):
         return expected_type.validate_errors(value)
     raise NotImplementedError()
 
+def is_advanced(expected_type: type) -> bool:
+   return any([type(expected_type) == type(adv_type) for adv_type in ADVANCED_TYPES])
 
 def _check_basic(value: Any, expected_type: type) -> TError:
     if expected_type in BASIC_TYPES and isinstance(value, expected_type):
@@ -46,6 +48,4 @@ def _check_advanced(value: Any, expected_type: type) -> TError:
         if any([check(value, argtype) == [] for argtype in get_args(expected_type)]):
             return []
         return ["TypeError"]
-    print(expected_type.__dict__)
-    print(value, expected_type, expected_type._name)
-    raise NotImplementedError()
+    raise NotImplementedError("Type %s not implemented", repr(expected_type))

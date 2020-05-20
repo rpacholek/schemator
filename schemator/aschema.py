@@ -1,3 +1,4 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import List, Tuple, TypeVar, Generic, Mapping, Any, Dict
 
@@ -15,4 +16,4 @@ class AbstractSchema(ABC):
 
     @classmethod
     @abstractmethod
-    def load(cls, obj: dict) -> "AbstractSchema": pass
+    def load(cls: T, obj: dict) -> T: pass

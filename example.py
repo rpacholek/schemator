@@ -49,3 +49,5 @@ print(Task.validate_errors(task2))
 
 print(Task.validate(task1))
 print(Task.validate(task2))
+
+print(Task.load(task1).name)
