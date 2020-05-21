@@ -92,6 +92,12 @@ class AdvanceTypeTest(unittest.TestCase):
         }, Dict[str, int]))
         self.assertNotEmpty(check({10: "str", "str": "str"}, Dict[str, int]))
 
+    def test_union(self):
+        self.assertEmpty(check("test", Union[str, int]))
+        self.assertEmpty(check(10, Union[str, int]))
+
+        self.assertNotEmpty(check("str", Union[float, int]))
+
 
 class ExampleSchema(AbstractSchema):
     @classmethod

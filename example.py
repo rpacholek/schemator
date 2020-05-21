@@ -12,19 +12,19 @@ class Task(Schema):
     k: List[str]
     d: Dict[str, int]
     o: Optional[int]
-    entries: TaskType
+    entries: List[TaskType]
 
-    __strict__ = False # Default
+    __strict__ = True # Default
 
 
 task1 = {
     "name": "test",
     "mode": 1,
-    "entries": {
+    "entries": [{
         "name": "test",
         "test": "test",
         "inttest": 10
-        },
+        }],
     "k": ["test"],
     "d": {
         "test": 1
@@ -35,11 +35,11 @@ task1 = {
 task2 = {
     "name": "test",
     "mode": None,
-    "entries": {
+    "entries": [{
         "name": "test",
         "test": 10,
         "inttest": 10
-        },
+        }],
     "o": "str"
 }
 
@@ -51,3 +51,4 @@ print(Task.validate(task1))
 print(Task.validate(task2))
 
 print(Task.load(task1).name)
+print(Task.load(task1).__dict__)

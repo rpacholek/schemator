@@ -1,4 +1,4 @@
-from typing import get_origin, get_args, Any, Tuple, List, Dict, Optional, Union
+from typing import get_origin, get_args, Any, List, Dict, Optional, Union
 from itertools import chain
 from .aschema import AbstractSchema
 
