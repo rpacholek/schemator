@@ -30,30 +30,30 @@ class Schema(AbstractSchema):
     def load(cls: Type[T], obj: dict) -> T:
         instance = cls()
         for name, objtype in cls.__annotations__.items():
-            instance.__dict__[name] = cls.__load(obj.get(name, None), objtype)
+            instance.__dict__[name] = cls._load(obj.get(name, None), objtype)
         return instance
 
     @classmethod
-    def __load(cls, value: T, objtype: type) -> T:
+    def _load(cls, value: T, objtype: type) -> T:
         if isinstance(objtype, type) and issubclass(objtype, AbstractSchema):
             return objtype.load(value)  # type: ignore
         elif is_advanced(objtype):
             if get_origin(objtype) == get_origin(List):
                 args = get_args(objtype)
                 if args:
-                    return [cls.__load(v, args[0]) for v in value]
+                    return [cls._load(v, args[0]) for v in value]
                 return value
             elif get_origin(objtype) == get_origin(Dict):
                 args = get_args(objtype)
                 if len(args) == 2:
                     return {
-                        key: cls.__load(v, args[1])
+                        key: cls._load(v, args[1])
                         for key, v in value.items()
                     }
             elif get_origin(objtype) == Union:
                 args = get_args(objtype)
                 if check(value, args[0]):
-                    return cls.__load(value, args[0])
-                return cls.__load(value, args[1])
+                    return cls._load(value, args[0])
+                return cls._load(value, args[1])
         else:
             return value
